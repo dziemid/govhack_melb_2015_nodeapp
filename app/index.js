@@ -13,6 +13,7 @@ io.on('connection', function(socket){
   });
   socket.on('user_click', function(msg){
     console.log('message: ' + msg);
+     console.log(msg);
      socket.broadcast.emit('user_click', msg);
   }); 
 });

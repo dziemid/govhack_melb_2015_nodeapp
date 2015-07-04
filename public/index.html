@@ -35,6 +35,8 @@ var newMarker = null;
 var targetMarker = null;
 var socket = io();
 
+var peers = {};
+
 window.onload = function() {
   cartodb.createVis('map', 'https://gdziemidowicz.cartodb.com/api/v2/viz/2ebe7fe6-21d6-11e5-ac0c-0e853d047bba/viz.json')
   .done(function(vis, layers) {
@@ -46,12 +48,18 @@ window.onload = function() {
 	targetMarker = new L.marker([0,0]).addTo(map);
 
     layers[1].on('featureClick', function(e, latlng, pos, data, layerNumber) {
-      socket.emit('user_click', latlng);
       targetMarker.setLatLng(latlng);
+      socket.emit('user_click', { pos: latlng, id: socket.id } );
     });
 
      socket.on('user_click', function(msg){
-     	new L.marker(msg).addTo(map);
+     	console.log("socket!!");
+     	if (peers[msg.id]) {
+			peers[msg.id].setLatLng(msg.pos);
+     	} else {
+     		peers[msg.id] = new L.marker(msg.pos);
+     		peers[msg.id].addTo(map);
+     	}
   	});
 
     // you can get the native map to work with it
@@ -65,6 +73,9 @@ window.onload = function() {
 
 	function showPosition(position) {
 		var my_location = new L.marker([position.coords.latitude,position.coords.longitude]).addTo(map);
+		socket.emit('user_click', 
+			{ pos: [position.coords.latitude,position.coords.longitude], id: socket.id }	
+			);
 	}
 
     var x = document.getElementById("demo");
