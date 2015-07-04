@@ -1,15 +1,22 @@
-var express = require('express');
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
-// Constants
-var PORT = 8080;
+app.get('/', function(req, res){
+  res.sendfile('public/index.html');
+});
 
-// App
-var app = express();
-// app.get('/', function (req, res) {
-//   res.send('Hello world\n');
-// });
+io.on('connection', function(socket){
+  console.log('a user connected');
+   socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+  socket.on('user_click', function(msg){
+    console.log('message: ' + msg);
+     socket.broadcast.emit('user_click', msg);
+  }); 
+});
 
-app.use(express.static('public'));
-
-app.listen(PORT);
-console.log('Running on http://localhost:' + PORT);
+http.listen(8080, function(){
+  console.log('listening on *:8080');
+});
