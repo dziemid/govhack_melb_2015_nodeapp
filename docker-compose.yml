@@ -2,6 +2,7 @@ appserver:
   build: .  # <- use instead image when making infrastructure changes
   volumes:
     - ./app:/src/app
+    - ./public:/src/public
   ports:
     - "1234:8080"
   command: node /src/app/index.js
