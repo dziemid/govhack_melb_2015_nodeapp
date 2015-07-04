@@ -56,18 +56,27 @@ window.onload = function() {
     // map.setZoom(3);
     // map.panTo([50.5, 30.5]);
 
+	function showPosition(position) {
+		alert("test");
+		var my_location = new L.marker([position.coords.latitude,position.coords.longitude]).addTo(map);
+	}
+
     var x = document.getElementById("demo");
+	
 	function getLocation() {
 	    if (navigator.geolocation) {
-	        navigator.geolocation.getCurrentPosition(showPosition);
+	        navigator.geolocation.getCurrentPosition(showPosition, 
+    function(error){
+         alert(error.message);
+    }, {
+      		   enableHighAccuracy: true
+              ,timeout : 25000
+    });
 	    } else {
 	        x.innerHTML = "Geolocation is not supported by this browser.";
 	    }
 	}
-	function showPosition(position) {
-		var my_location = new L.marker([position.coords.latitude,position.coords.longitude]).addTo(map);
-	}
-
+	
   	getLocation();
 
   });
