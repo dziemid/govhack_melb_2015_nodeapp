@@ -8,9 +8,13 @@ RUN     yum install -y npm
 WORKDIR /src
 
 # Bundle app source
-ADD . /src
+
+ADD package.json /src/
+
 # Install app dependencies
 RUN npm install
+
+ADD . /src
 
 EXPOSE  8080
 CMD ["node", "app/index.js"]
